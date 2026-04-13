@@ -1,5 +1,6 @@
 package com.example.podcastplayer
 
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -17,6 +18,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var statusText: TextView
     private lateinit var podcastSpinner: Spinner
 
+    private var mediaPlayer: MediaPlayer? = null
     private var isPlaying = false
     private var currentPosition = 0
     private var duration = 0
@@ -29,6 +31,15 @@ class MainActivity : AppCompatActivity() {
         "有声读物 - 经典小说推荐",
         "音乐推荐 - 高品质音乐精选",
         "财经观察 - 投资理财分析"
+    )
+
+    // 替换为实际的音频资源或URL
+    private val podcastUrls = arrayOf(
+        "",
+        "",
+        "",
+        "",
+        ""
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,21 +87,20 @@ class MainActivity : AppCompatActivity() {
 
         progressBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                if (fromUser) {
+                if (fromUser && isPlaying) {
                     currentPosition = progress
+                    mediaPlayer?.seekTo(currentPosition)
                     currentTimeText.text = formatTime(progress)
                 }
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                seekAudio(currentPosition)
-            }
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
 
         volumeSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
-                    setVolume(progress)
+                    mediaPlayer?.setVolume((progress / 100f), (progress / 100f))
                 }
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -99,13 +109,45 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadPodcast(position: Int) {
-        val podcastName = podcastItems[position].split(" - ")[0]
-        statusText.text = "准备播放: $podcastName"
-        statusText.setTextColor(getColor(R.color.paused))
-        isPlaying = false
-        progressBar.progress = 0
-        currentTimeText.text = "00:00"
-        updatePlayButton()
+        // 释放之前的媒体播放器
+        mediaPlayer?.release()
+        mediaPlayer = null
+
+        // 初始化新的媒体播放器
+        try {
+            if (podcastUrls[position].isNotEmpty()) {
+                mediaPlayer = MediaPlayer().apply {
+                    setDataSource(podcastUrls[position])
+                    prepareAsync()
+                    setOnPreparedListener {
+                        duration = it.duration
+                        progressBar.max = duration
+                        durationText.text = formatTime(duration)
+                        statusText.text = "准备播放"
+                        statusText.setTextColor(getColor(R.color.paused))
+                        isPlaying = false
+                        updatePlayButton()
+                    }
+                    setOnCompletionListener {
+                        pauseAudio()
+                    }
+                    setOnErrorListener { _, what, extra ->
+                        statusText.text = "播放错误"
+                        statusText.setTextColor(getColor(R.color.error))
+                        false
+                    }
+                }
+            } else {
+                statusText.text = "演示模式 - 无音频源"
+                statusText.setTextColor(getColor(R.color.paused))
+                isPlaying = false
+                updatePlayButton()
+            }
+        } catch (e: Exception) {
+            statusText.text = "加载失败"
+            statusText.setTextColor(getColor(R.color.error))
+            e.printStackTrace()
+        }
     }
 
     private fun togglePlayPause() {
@@ -117,14 +159,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun playAudio() {
-        isPlaying = true
-        statusText.text = "正在播放..."
-        statusText.setTextColor(getColor(R.color.playing))
-        updatePlayButton()
-        handler.post(progressUpdateRunnable)
+        mediaPlayer?.let {
+            try {
+                it.start()
+                isPlaying = true
+                statusText.text = "正在播放..."
+                statusText.setTextColor(getColor(R.color.playing))
+                updatePlayButton()
+                handler.post(progressUpdateRunnable)
+            } catch (e: Exception) {
+                statusText.text = "播放失败"
+                statusText.setTextColor(getColor(R.color.error))
+                e.printStackTrace()
+            }
+        } ?: run {
+            statusText.text = "没有可播放的音频"
+            statusText.setTextColor(getColor(R.color.error))
+        }
     }
 
     private fun pauseAudio() {
+        mediaPlayer?.pause()
         isPlaying = false
         statusText.text = "已暂停"
         statusText.setTextColor(getColor(R.color.paused))
@@ -133,25 +188,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateProgress() {
-        if (isPlaying) {
-            currentPosition = (progressBar.progress + 1).coerceAtMost(duration)
-            progressBar.progress = currentPosition
-            currentTimeText.text = formatTime(currentPosition)
-
-            if (currentPosition >= duration) {
-                pauseAudio()
-            } else {
+        mediaPlayer?.let {
+            currentPosition = it.currentPosition
+            if (currentPosition < duration) {
+                progressBar.progress = currentPosition
+                currentTimeText.text = formatTime(currentPosition)
                 handler.postDelayed(progressUpdateRunnable, 1000)
+            } else {
+                pauseAudio()
             }
         }
-    }
-
-    private fun seekAudio(position: Int) {
-        currentPosition = position
-    }
-
-    private fun setVolume(level: Int) {
-        // Audio volume logic would go here
     }
 
     private fun formatTime(millis: Int): String {
@@ -164,5 +210,12 @@ class MainActivity : AppCompatActivity() {
         playBtn.setImageResource(
             if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play
         )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer?.release()
+        mediaPlayer = null
+        handler.removeCallbacks(progressUpdateRunnable)
     }
 }
