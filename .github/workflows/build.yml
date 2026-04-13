@@ -1,19 +1,18 @@
-# Podcast Player CI/CD Pipeline
-# Automatically builds APK on branch push
-
 name: Build APK
 
 on:
   push:
+    branches: [ "podcast_qwen" ]
+  pull_request:
     branches: [ "podcast_qwen" ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    
     steps:
-    - name: Checkout code
+    - name: Checkout Repository
       uses: actions/checkout@v3
 
     - name: Set up JDK 17
@@ -21,28 +20,31 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: gradle
+        cache: 'gradle'
 
-    - name: Give execute permission to gradlew
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
+
+    - name: Make Gradlew executable
       run: chmod +x gradlew
 
-    - name: Clean build
+    - name: Clean Build
       run: ./gradlew clean
 
-    - name: Build with Gradle
+    - name: Build APK
       run: ./gradlew assembleDebug
 
-    - name: Create APK directory
-      run: mkdir -p apk_artifacts
+    - name: Create Output Directory
+      run: mkdir -p apk_build
 
-    - name: Copy APK to artifact directory
+    - name: Copy APK
       run: |
-        cp app/build/outputs/apk/debug/app-debug.apk apk_artifacts/app-debug.apk
-        ls -la apk_artifacts/
+        cp app/build/outputs/apk/debug/app-debug.apk apk_build/app-debug.apk
+        ls -la apk_build/
 
-    - name: Upload APK artifact
+    - name: Upload APK
       uses: actions/upload-artifact@v3
       with:
         name: podcast-player-debug
-        path: apk_artifacts/app-debug.apk
+        path: apk_build/app-debug.apk
         retention-days: 7

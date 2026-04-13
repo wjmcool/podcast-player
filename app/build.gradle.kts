@@ -1,5 +1,10 @@
+plugins {
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+}
+
 android {
-    namespace = 'com.openclaw.podcast'
+    namespace = "com.openclaw.podcast"
     compileSdk = 34
 
     defaultConfig {
@@ -11,6 +16,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    
 
     buildTypes {
         release {

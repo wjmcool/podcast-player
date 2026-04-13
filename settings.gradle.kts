@@ -1,3 +1,7 @@
+# Settings file
+rootProject.name = "PodcastPlayer"
+include(":app")
+
 pluginManagement {
     repositories {
         google()
@@ -12,6 +16,3 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-
-rootProject.name = "PodcastPlayer"
-include ":app"
