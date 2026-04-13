@@ -25,17 +25,14 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: Make app/gradlew executable
-        run: chmod +x app/gradlew
-
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace || ./gradlew assembleDebug
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --stacktrace
 
       - name: Build Release APK
-        run: ./gradlew assembleRelease --stacktrace || ./gradlew assembleRelease
+        run: |
+          ./gradlew assembleRelease --stacktrace
 
       - name: Upload Debug APK
         if: success()
