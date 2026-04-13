@@ -1,10 +1,8 @@
-name: Build APK
+# Build APK for Manual Trigger
+
+name: Build APK (Manual)
 
 on:
-  push:
-    branches: [ "podcast_qwen" ]
-  pull_request:
-    branches: [ "podcast_qwen" ]
   workflow_dispatch:
 
 jobs:
