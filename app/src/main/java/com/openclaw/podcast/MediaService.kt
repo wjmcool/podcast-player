@@ -91,8 +91,8 @@ class MediaService : MediaSessionService() {
     }
 
     private fun createNotification(): android.app.Notification {
-        // Simple notification - use applicationContext to avoid context issues
-        return android.app.Notification.Builder(applicationContext, "podcast_channel")
+        // Simple notification - use this@MediaService.applicationContext to avoid scope issues
+        return android.app.Notification.Builder(this@MediaService.applicationContext, "podcast_channel")
             .setContentTitle("Podcast Player")
             .setContentText("Now Playing")
             .setSmallIcon(android.R.drawable.ic_media_play)
