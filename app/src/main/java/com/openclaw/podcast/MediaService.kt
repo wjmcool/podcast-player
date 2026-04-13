@@ -1,0 +1,104 @@
+package com.openclaw.podcast
+
+import android.content.Context
+import android.media.AudioAttributes
+import android.media.MediaSession
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.session.MediaSession
+import androidx.media3.session.MediaSessionService
+import java.util.concurrent.TimeUnit
+
+class MediaService : MediaSessionService() {
+
+    private var mediaSession: MediaSession? = null
+    private var exoPlayer: ExoPlayer? = null
+    private val handler = Handler(Looper.getMainLooper())
+
+    private val playbackEventListener = object : Player.Listener {
+        override fun onPlaybackStateChanged(playbackState: Int) {
+            Log.d(TAG, "Playback state: $playbackState")
+        }
+
+        override fun onIsPlayingChanged(isPlaying: Boolean) {
+            if (isPlaying) {
+                startForeground(1, createNotification())
+            } else {
+                stopForeground(STOP_FOREGROUND_REMOVE)
+            }
+        }
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        Log.d(TAG, "MediaService created")
+        
+        val audioAttributes = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_MEDIA)
+            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+            .build()
+            
+        exoPlayer = ExoPlayer.Builder(this)
+            .setAudioAttributes(audioAttributes, true)
+            .build()
+            
+        exoPlayer?.addListener(playbackEventListener)
+        
+        mediaSession = MediaSession.Builder(this, exoPlayer!!).build()
+    }
+
+    override fun onDestroy() {
+        exoPlayer?.removeListener(playbackEventListener)
+        exoPlayer?.release()
+        mediaSession?.run {
+            release()
+            mediaSession = null
+        }
+        super.onDestroy()
+    }
+
+    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? {
+        return mediaSession
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        intent?.let {
+            val playbackState = it.getIntExtra("playback_state", Player.STATE_IDLE)
+            val mediaItemUrl = it.getStringExtra("media_url")
+            
+            if (mediaItemUrl != null) {
+                playMedia(mediaItemUrl, playbackState == Player.STATE_PAUSED)
+            }
+        }
+        return super.onStartCommand(intent, flags, startId)
+    }
+
+    private fun playMedia(url: String, shouldPlay: Boolean) {
+        exoPlayer?.apply {
+            val mediaItem = MediaItem.fromUri(url)
+            setMediaItem(mediaItem)
+            prepare()
+            if (shouldPlay) {
+                play()
+            }
+        }
+    }
+
+    private fun createNotification(): android.app.Notification {
+        // Simple notification
+        return android.app.Notification.Builder(this, "podcast_channel")
+            .setContentTitle("Podcast Player")
+            .setContentText("Now Playing")
+            .setSmallIcon(android.R.drawable.ic_media_play)
+            .build()
+    }
+
+    companion object {
+        private const val TAG = "MediaService"
+    }
+}

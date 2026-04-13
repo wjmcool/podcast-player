@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/bg_podcast_card"
+    android:layout_margin="16dp">
+
+    <TextView
+        android:id="@+id/podcast_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Podcast Title"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/podcast_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Description goes here"
+        android:textSize="16sp"
+        android:textColor="@android:color/darker_gray"
+        android:gravity="center"/>
+
+</LinearLayout>

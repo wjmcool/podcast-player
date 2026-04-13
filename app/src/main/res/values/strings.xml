@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">播客 APP</string>
+    <string name="channel_name">播客通知</string>
+    <string name="playback_state">playback_state</string>
+    <string name="media_url">media_url</string>
+    <string name="notification_channel_id">podcast_channel</string>
+</resources>
