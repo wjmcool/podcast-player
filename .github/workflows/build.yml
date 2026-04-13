@@ -6,8 +6,7 @@ name: Build APK
 on:
   push:
     branches: [ "podcast_qwen" ]
-  pull_request:
-    branches: [ "podcast_qwen" ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -27,25 +26,23 @@ jobs:
     - name: Give execute permission to gradlew
       run: chmod +x gradlew
 
+    - name: Clean build
+      run: ./gradlew clean
+
     - name: Build with Gradle
       run: ./gradlew assembleDebug
 
-    - name: Create download directory
+    - name: Create APK directory
+      run: mkdir -p apk_artifacts
+
+    - name: Copy APK to artifact directory
       run: |
-        mkdir -p apk_download
-        cp app/build/outputs/apk/debug/app-debug.apk apk_download/app-debug.apk
-      
+        cp app/build/outputs/apk/debug/app-debug.apk apk_artifacts/app-debug.apk
+        ls -la apk_artifacts/
+
     - name: Upload APK artifact
       uses: actions/upload-artifact@v3
       with:
-        name: podcast-player-apk
-        path: apk_download/app-debug.apk
-
-    - name: Download APK to artifact
-      run: |
-        wget -O /sdcard/OpenClaw/podcast-player-debug.apk \
-          "https://github.com/wjmcool/podcast-player/actions/runs/${{ github.run_id }}/artifacts/${{ job.artifactId }}"
-      continue-on-error: true
-
-    - name: Print success message
-      run: echo "APK built and ready to download!"
+        name: podcast-player-debug
+        path: apk_artifacts/app-debug.apk
+        retention-days: 7
