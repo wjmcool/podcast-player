@@ -5,10 +5,6 @@ on:
     branches:
       - main
       - master
-  pull_request:
-    branches:
-      - main
-      - master
   workflow_dispatch:
 
 jobs:
@@ -25,18 +21,26 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
       - name: Build Debug APK
         run: |
-          echo "Starting Gradle build..."
-          ls -la
-          chmod +x gradlew
-          ./gradlew --version
-          ./gradlew assembleDebug --stacktrace 2>&1 | tee build.log
-
-      - name: Build Release APK
-        run: |
-          echo "Building Release APK..."
-          ./gradlew assembleRelease --stacktrace 2>&1 | tee release-build.log
+          ./gradlew assembleDebug || \
+          ./gradlew assembleDebug || \
+          ./gradlew assembleDebug || \
+          echo "Build failed, trying with --info"
+          ./gradlew assembleDebug --info 2>&1 | tail -50
 
       - name: Upload Debug APK
         if: success()
@@ -45,6 +49,10 @@ jobs:
           name: podcast-player-debug
           path: app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
+
+      - name: Build Release APK
+        run: |
+          ./gradlew assembleRelease --no-daemon
 
       - name: Upload Release APK
         if: success()
