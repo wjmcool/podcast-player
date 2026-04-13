@@ -1,15 +1,16 @@
 package com.openclaw.podcast
 
 import android.content.Context
-import android.media.AudioAttributes
-import android.media.MediaSession
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import androidx.annotation.OptIn
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableAndroidGraphics
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.session.MediaController
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import java.util.concurrent.TimeUnit
@@ -38,9 +39,9 @@ class MediaService : MediaSessionService() {
         super.onCreate()
         Log.d(TAG, "MediaService created")
         
-        val audioAttributes = AudioAttributes.Builder()
-            .setUsage(AudioAttributes.USAGE_MEDIA)
-            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+        val audioAttributes = android.media.AudioAttributes.Builder()
+            .setUsage(android.media.AudioAttributes.USAGE_MEDIA)
+            .setContentType(android.media.AudioAttributes.CONTENT_TYPE_MUSIC)
             .build()
             
         exoPlayer = ExoPlayer.Builder(this)
@@ -72,7 +73,7 @@ class MediaService : MediaSessionService() {
             val mediaItemUrl = it.getStringExtra("media_url")
             
             if (mediaItemUrl != null) {
-                playMedia(mediaItemUrl, playbackState == androidx.media3.common.Player.STATE_PAUSED)
+                playMedia(mediaItemUrl, playbackState == Player.STATE_PAUSED)
             }
         }
         // Call super onStartCommand for MediaSessionService compatibility
