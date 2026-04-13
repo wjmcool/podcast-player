@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.PodcastPlayer" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="colorPrimary">#E94560</item>
+        <item name="colorPrimaryDark">#16213E</item>
+        <item name="colorAccent">#E94560</item>
+    </style>
+</resources>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="播客播放器"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="#E94560"
+            android:layout_marginBottom="32dp" />
+
+        <Spinner
+            android:id="@+id/podcastSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="56dp"
+            android:padding="16dp"
+            android:layout_marginBottom="24dp" />
+
+        <TextView
+            android:id="@+id/statusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="准备播放"
+            android:textSize="16sp"
+            android:textColor="#E94560"
+            android:layout_marginBottom="24dp" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:max="100"
+            android:progress="0"
+            android:progressTint="#E94560" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="32dp">
+
+            <TextView
+                android:id="@+id/currentTimeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00"
+                android:textSize="14sp"
+                android:textColor="#A0A0A0"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/durationText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00"
+                android:textSize="14sp"
+                android:textColor="#A0A0A0"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="32dp">
+
+            <Button
+                android:id="@+id/prevBtn"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:text="⏮"
+                android:textSize="24sp" />
+
+            <Button
+                android:id="@+id/playBtn"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:text="▶️"
+                android:textSize="32sp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp" />
+
+            <Button
+                android:id="@+id/nextBtn"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:text="⏭"
+                android:textSize="24sp" />
+        </LinearLayout>
+
+        <SeekBar
+            android:id="@+id/volumeSlider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:progress="80"
+            android:max="100"
+            android:progressTint="#E94560" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
