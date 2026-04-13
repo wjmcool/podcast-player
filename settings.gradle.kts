@@ -1,4 +1,4 @@
-# Settings file
+// Settings file
 rootProject.name = "PodcastPlayer"
 include(":app")
 
