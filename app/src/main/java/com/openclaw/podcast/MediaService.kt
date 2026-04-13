@@ -66,7 +66,7 @@ class MediaService : MediaSessionService() {
         return mediaSession
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: android.content.Intent?, flags: Int, startId: Int): Int {
         intent?.let {
             val playbackState = it.getIntExtra("playback_state", Player.STATE_IDLE)
             val mediaItemUrl = it.getStringExtra("media_url")
@@ -75,6 +75,7 @@ class MediaService : MediaSessionService() {
                 playMedia(mediaItemUrl, playbackState == Player.STATE_PAUSED)
             }
         }
+        // Call super onStartCommand for MediaSessionService compatibility
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -90,8 +91,8 @@ class MediaService : MediaSessionService() {
     }
 
     private fun createNotification(): android.app.Notification {
-        // Simple notification
-        return android.app.Notification.Builder(this, "podcast_channel")
+        // Simple notification - use applicationContext to avoid context issues
+        return android.app.Notification.Builder(applicationContext, "podcast_channel")
             .setContentTitle("Podcast Player")
             .setContentText("Now Playing")
             .setSmallIcon(android.R.drawable.ic_media_play)
