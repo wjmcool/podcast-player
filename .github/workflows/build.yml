@@ -11,29 +11,34 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up JDK 17
+    - name: Setup Java 17
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: gradle
 
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4
-      with:
-        gradle-version: '8.5'
+    - name: Download and Setup Gradle 8.5
+      run: |
+        wget https://services.gradle.org/distributions/gradle-8.5-bin.zip
+        unzip gradle-8.5-bin.zip
+        export PATH=./gradle-8.5/bin:$PATH
+        gradle --version
+
+    - name: Generate Gradle Wrapper
+      run: |
+        export PATH=./gradle-8.5/bin:$PATH
+        cd /home/runner/work/podcast-player/podcast-player
+        gradle wrapper
 
     - name: Build APK
       run: |
-        echo "Starting build with Gradle 8.5..."
-        ./gradlew assembleDebug --no-daemon --stacktrace
-        echo "Build completed!"
-
-    - name: List APK files
-      run: |
-        echo "Searching for APK files..."
-        find app -name "*.apk" -type f
-        ls -la app/build/outputs/apk/debug/
+        ./gradlew assembleDebug --info || {
+          echo "Build failed, listing build directory:"
+          ls -la app/build/
+          echo "Trying with root gradle..."
+          export PATH=./gradle-8.5/bin:$PATH
+          gradle assembleDebug
+        }
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
