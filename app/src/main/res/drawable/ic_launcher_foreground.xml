@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+  <path
+      android:fillColor="@color/ic_launcher_foreground"
+      android:pathData="M27,27h18v18H27V27zM45,27h18v18H45V27zM63,27h18v18H63V27zM81,27h18v18H81V27zM27,45h18v18H27V45zM45,45h18v18H45V45zM63,45h18v18H63V45zM81,45h18v18H81V45zM27,63h18v18H27V63zM45,63h18v18H45V63zM63,63h18v18H63V63zM81,63h18v18H81V63zM27,81h18v18H27V81zM45,81h18v18H45V81zM63,81h18v18H63V81zM81,81h18v18H81V81z"/>
+</vector>
