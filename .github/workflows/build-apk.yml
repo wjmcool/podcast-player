@@ -21,66 +21,30 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Verify Gradle files
+      - name: Grant execute permission
         run: |
-          echo "Checking Gradle files..."
-          ls -la build.gradle*
-          ls -la app/build.gradle
-          cat build.gradle
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
-      - name: Verify Gradle wrapper
-        run: |
-          echo "Checking Gradle wrapper..."
-          ./gradlew --version
-          ./gradlew tasks --dry-run
+          chmod +x gradlew
+          ls -la
 
       - name: Build Debug APK
         run: |
-          ./gradlew clean
-          ./gradlew assembleDebug --no-daemon --stacktrace --info
+          ./gradlew tasks --stacktrace
+          ./gradlew assembleDebug --stacktrace || exit 1
 
-      - name: Upload Debug APK
+      - name: Upload APK
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: podcast-player-debug
+          name: podcast-player
           path: app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
 
-      - name: Build Release APK
-        run: |
-          ./gradlew assembleRelease --no-daemon
-
-      - name: Upload Release APK
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: podcast-player-release
-          path: app/build/outputs/apk/release/app-release.apk
-          retention-days: 30
-
       - name: Create Release
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' && success()
+        if: github.ref == 'refs/heads/main' && success()
         uses: softprops/action-gh-release@v1
         with:
-          files: |
-            app/build/outputs/apk/debug/app-debug.apk
-            app/build/outputs/apk/release/app-release.apk
+          files: app/build/outputs/apk/debug/app-debug.apk
           draft: false
           prerelease: false
-          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
