@@ -20,18 +20,17 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          java-package: jdk
+          architecture: x64
 
-      - name: Check Gradle files
+      - name: Grant execute permission
         run: |
+          chmod +x gradlew
           ls -la
-          ls -la app/
-          ls -la app/src/
 
       - name: Build APK
         run: |
-          chmod +x gradlew
-          ./gradlew clean
-          ./gradlew assembleDebug --no-daemon
+          ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: Upload APK
         if: success()
