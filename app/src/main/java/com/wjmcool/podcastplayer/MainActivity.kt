@@ -1,6 +1,8 @@
 package com.wjmcool.podcastplayer
 
 import android.os.Bundle
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
@@ -28,16 +30,16 @@ class MainActivity : AppCompatActivity() {
         player = ExoPlayer.Builder(this).build()
         playerView.player = player
 
-        val programContainer = findViewById<android.widget.LinearLayout>(R.id.program_container)
+        val programContainer = findViewById<LinearLayout>(R.id.program_container)
 
         programs.forEach { program ->
-            val card = layoutInflater.inflate(R.layout.program_item, programContainer, false) as MaterialCardView
-            card.findViewById<android.widget.TextView>(R.id.title).text = program.title
-            card.findViewById<android.widget.TextView>(R.id.description).text = program.description
-            card.setOnClickListener {
+            val cardView = layoutInflater.inflate(R.layout.program_item, programContainer, false) as MaterialCardView
+            cardView.findViewById<TextView>(R.id.title).text = program.title
+            cardView.findViewById<TextView>(R.id.description).text = program.description
+            cardView.setOnClickListener {
                 playProgram(program.url)
             }
-            programContainer.addView(card)
+            programContainer.addView(cardView)
         }
 
         findViewById<MaterialButton>(R.id.play_btn).setOnClickListener { player.play() }
