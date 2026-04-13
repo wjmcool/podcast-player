@@ -21,12 +21,24 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build APK
+      - name: Build Debug APK
         run: |
+          echo "=== Start of build log ==="
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon --stacktrace || \
-          exit 0
-          echo "Build completed successfully"
+          ls -la
+          ls -la app/
+          ls -la app/src/
+          ./gradlew assembleDebug --no-daemon --stacktrace
+          echo "=== End of build log ==="
+
+      - name: Upload build log
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: |
+            build.log
+            release-build.log
+          retention-days: 30
 
       - name: Upload APK
         if: success()
