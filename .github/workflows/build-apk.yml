@@ -27,12 +27,16 @@ jobs:
 
       - name: Build Debug APK
         run: |
+          echo "Starting Gradle build..."
+          ls -la
           chmod +x gradlew
-          ./gradlew assembleDebug --stacktrace
+          ./gradlew --version
+          ./gradlew assembleDebug --stacktrace 2>&1 | tee build.log
 
       - name: Build Release APK
         run: |
-          ./gradlew assembleRelease --stacktrace
+          echo "Building Release APK..."
+          ./gradlew assembleRelease --stacktrace 2>&1 | tee release-build.log
 
       - name: Upload Debug APK
         if: success()
