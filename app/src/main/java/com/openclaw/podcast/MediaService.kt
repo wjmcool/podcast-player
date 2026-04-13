@@ -72,7 +72,7 @@ class MediaService : MediaSessionService() {
             val mediaItemUrl = it.getStringExtra("media_url")
             
             if (mediaItemUrl != null) {
-                playMedia(mediaItemUrl, playbackState == Player.STATE_PAUSED)
+                playMedia(mediaItemUrl, playbackState == androidx.media3.common.Player.STATE_PAUSED)
             }
         }
         // Call super onStartCommand for MediaSessionService compatibility
