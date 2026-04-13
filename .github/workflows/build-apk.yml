@@ -28,16 +28,17 @@ jobs:
       - name: Grant execute permission for gradlew
         run: |
           chmod +x gradlew
-          chmod +x gradlew.bat
           ls -la gradlew
+          file gradlew
 
       - name: Download Gradle Wrapper Jar
         run: |
+          mkdir -p gradle/wrapper
           curl -L -o gradle/wrapper/gradle-wrapper.jar \
             https://raw.githubusercontent.com/gradle/gradle/v8.3.0/gradle/wrapper/gradle-wrapper.jar
 
       - name: Build APK
-        run: bash gradlew assembleDebug --no-daemon
+        run: bash gradlew assembleDebug --no-daemon || ./gradlew assembleDebug
 
       - name: Upload APK
         if: success()
