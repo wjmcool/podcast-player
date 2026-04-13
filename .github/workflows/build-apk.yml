@@ -21,6 +21,13 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Verify Gradle files
+        run: |
+          echo "Checking Gradle files..."
+          ls -la build.gradle*
+          ls -la app/build.gradle
+          cat build.gradle
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
@@ -34,13 +41,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      - name: Verify Gradle wrapper
+        run: |
+          echo "Checking Gradle wrapper..."
+          ./gradlew --version
+          ./gradlew tasks --dry-run
+
       - name: Build Debug APK
         run: |
-          ./gradlew assembleDebug || \
-          ./gradlew assembleDebug || \
-          ./gradlew assembleDebug || \
-          echo "Build failed, trying with --info"
-          ./gradlew assembleDebug --info 2>&1 | tail -50
+          ./gradlew clean
+          ./gradlew assembleDebug --no-daemon --stacktrace --info
 
       - name: Upload Debug APK
         if: success()
