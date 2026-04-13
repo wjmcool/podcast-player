@@ -25,28 +25,15 @@ jobs:
       run: chmod +x gradlew
 
     - name: Build APK
-      shell: bash
-      run: |
-        echo "Starting build..."
-        ./gradlew assembleDebug --stacktrace || true
-        echo "Build completed"
+      run: ./gradlew assembleDebug --no-daemon --info
 
-    - name: Check APK
-      run: |
-        if [ -f app/build/outputs/apk/debug/app-debug.apk ]; then
-            echo "APK found!"
-            mkdir -p output
-            cp app/build/outputs/apk/debug/app-debug.apk output/app-debug.apk
-            ls -la output/
-        else
-            echo "APK not found, listing outputs:"
-            find app/build -name "*.apk" 2>/dev/null
-        fi
+    - name: List APK files
+      run: find . -name "*.apk" -type f
 
     - name: Upload APK
-      if: success() || failure()
       uses: actions/upload-artifact@v4
       with:
         name: podcast-player-debug
-        path: output/app-debug.apk
+        path: app/build/outputs/apk/debug/app-debug.apk
         retention-days: 7
+        if-no-files-found: warn
