@@ -65,6 +65,21 @@ PodcastPlayer/
 - 商业思维 - 商业洞察分析
 - 艺术欣赏 - 音乐绘画鉴赏
 
+## 🔧 快速构建
+
+### 构建 APK(本地)
+
+```bash
+./gradlew assembleDebug
+```
+
+### 构建 APK(GitHub Actions)
+
+1. 访问仓库的 Actions 页面
+2. 选择 "Build APK" 工作流
+3. 点击 "Run workflow"
+4. 下载生成的 APK
+
 ## 许可证
 
 MIT License
