@@ -22,12 +22,23 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          java-package: jdk
+          architecture: x64
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+      - name: Grant execute permission for gradlew
+        run: |
+          chmod +x gradlew
+          chmod +x gradlew.bat
+          ls -la gradlew
+          file gradlew
+
+      - name: Download Gradle Wrapper Jar
+        run: |
+          curl -L -o gradle/wrapper/gradle-wrapper.jar \
+            https://raw.githubusercontent.com/gradle/gradle/v8.3.0/gradle/wrapper/gradle-wrapper.jar
 
       - name: Build APK
-        run: ./gradlew assembleDebug --no-daemon
+        run: bash gradlew assembleDebug --no-daemon
 
       - name: Upload APK
         if: success()
