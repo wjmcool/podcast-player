@@ -1,3 +1,15 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    // 统一管理插件版本
+    plugins {
+        id 'com.android.application' version '8.0.2'
+        id 'org.jetbrains.kotlin.android' version '1.8.22'
+    }
+}
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
