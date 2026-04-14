@@ -39,24 +39,17 @@ jobs:
       - name: Get tag
         id: get_tag
         run: |
-          # Get the exact tag at HEAD (if any)
           TAG=$(git tag --points-at HEAD | grep '^v' | head -1)
-          if [ -z "$TAG" ]; then
-            TAG=$(git describe --tags --exact 2>/dev/null || echo "")
+          if [ -n "$TAG" ]; then
+            echo "tag=$TAG" >> $GITHUB_OUTPUT
+            echo "tag_name=$TAG" >> $GITHUB_OUTPUT
           fi
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
-          echo "Found tag: '$TAG'"
 
       - name: Upload to GitHub Release
-        if: steps.get_tag.outputs.tag != ''
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
           files: app/build/outputs/apk/debug/*.apk
-          tag_name: ${{ steps.get_tag.outputs.tag }}
-          name: PodcastPlayer ${{ steps.get_tag.outputs.tag }}
-          draft: false
-          prerelease: false
-          generate_release_notes: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
