@@ -1,8 +1,8 @@
 package com.xiaobao.podcast.ui.screens
 
-import android.content.Context
+import android.app.Application
 import androidx.compose.runtime.*
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-class PlayerViewModel : ViewModel() {
+class PlayerViewModel(application: Application) : AndroidViewModel(application) {
 
     val episodes: List<Episode> = SampleEpisodes.episodes
 
@@ -43,7 +43,7 @@ class PlayerViewModel : ViewModel() {
 
         exoPlayer?.release()
 
-        exoPlayer = ExoPlayer.Builder(android.app.Application()).build().apply {
+        exoPlayer = ExoPlayer.Builder(getApplication()).build().apply {
             val mediaItem = MediaItem.fromUri(ep.audioUrl)
             setMediaItem(mediaItem)
             prepare()

@@ -1,6 +1,5 @@
 package com.xiaobao.podcast.ui
 
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -28,7 +27,13 @@ import com.xiaobao.podcast.ui.screens.PlayerViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PodcastApp(viewModel: PlayerViewModel = viewModel()) {
+fun PodcastApp(
+    viewModel: PlayerViewModel = viewModel(
+        factory = PlayerViewModelFactory(
+            (androidx.compose.ui.platform.LocalContext.current.applicationContext as android.app.Application)
+        )
+    )
+) {
     val currentEpisode by viewModel.currentEpisode.collectAsState()
     val isPlaying by viewModel.isPlaying.collectAsState()
     val progress by viewModel.progress.collectAsState()
@@ -55,7 +60,7 @@ fun PodcastApp(viewModel: PlayerViewModel = viewModel()) {
                     onPlayPause = { viewModel.togglePlayPause() },
                     onNext = { viewModel.playNext() },
                     onPrev = { viewModel.playPrev() },
-                    onClick = { /* could expand to full player */ },
+                    onClick = { },
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable { }
