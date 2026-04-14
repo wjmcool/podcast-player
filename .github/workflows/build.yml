@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          fetch-tags: true
+          fetch-tags: true # ensure tags are fetched
 
       - name: Setup Java
         uses: actions/setup-java@v4
