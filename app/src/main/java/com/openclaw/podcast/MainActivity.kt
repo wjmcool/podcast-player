@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity() {
                         when (playbackState) {
                             Player.STATE_READY -> {
                                 binding.playpauseBtn.setImageResource(android.R.drawable.ic_media_play)
-                                isPlaying = true
+                                this@MainActivity.isPlaying = true
                             }
                             Player.STATE_BUFFERING -> {
                                 binding.playpauseBtn.setImageResource(android.R.drawable.ic_media_pause)
