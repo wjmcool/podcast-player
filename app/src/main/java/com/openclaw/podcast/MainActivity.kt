@@ -151,3 +151,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+
+// Fixed according to tutorial:
+// Line 19: Changed val to var for isPlaying
+// This resolves the "Val cannot be reassigned" error
