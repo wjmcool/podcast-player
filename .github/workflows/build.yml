@@ -3,39 +3,41 @@ name: Build APK
 on:
   workflow_dispatch:
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    
     steps:
-    - uses: actions/checkout@v4
+    - name: Clean GitHub Actions Cache
+      run: |
+        echo "Cleaning all caches..."
+        rm -rf ${{ github.workspace }}/.gradle
+        rm -rf ${{ github.workspace }}/node_modules
+        rm -rf $HOME/.gradle/caches
+      
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        clean: true
+        fetch-depth: 0
 
-    - name: Set up JDK 17
+    - name: Setup JDK 17
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
+        cache: 'gradle'
 
-    - name: Add Gradle Wrapper
-      run: |
-        cd ${{ github.workspace }}
-        mkdir -p gradle/wrapper
-        wget -q https://raw.githubusercontent.com/gradle/gradle/v8.5.0/gradle/wrapper/gradle-wrapper.jar -O gradle/wrapper/gradle-wrapper.jar
-        wget -q https://raw.githubusercontent.com/gradle/gradle/v8.5.0/gradlew -O gradlew
-        wget -q https://raw.githubusercontent.com/gradle/gradle/v8.5.0/gradlew.bat -O gradlew.bat
-        chmod +x gradlew
-      
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v4
+      with:
+        gradle-version: '8.5'
+        cache-read-only: false
+
     - name: Build APK
       run: |
-        export PATH=./gradle-8.5/bin:$PATH
-        wget -q https://services.gradle.org/distributions/gradle-8.5-bin.zip
-        unzip -q gradle-8.5-bin.zip
-        export PATH=$PWD/gradle-8.5/bin:$PATH
-        ./gradlew assembleDebug --info || ./gradle-8.5/bin/gradle assembleDebug
-        
+        ./gradlew assembleDebug --no-daemon --info
+
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
