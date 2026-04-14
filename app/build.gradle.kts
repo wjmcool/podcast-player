@@ -15,7 +15,6 @@ android {
         versionName = "1.0"
 
         vectorDrawables {
-            defaultFormatsTest = TestDefaultFormats("resource", "res")
         }
     }
 
