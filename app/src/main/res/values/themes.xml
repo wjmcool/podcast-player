@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.PodcastApp" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">#6c5ce7</item>
+        <item name="android:navigationBarColor">#0f0f1a</item>
+    </style>
+</resources>

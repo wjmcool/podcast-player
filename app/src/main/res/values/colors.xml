@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Purple -->
+    <color name="purple_primary">#6c5ce7</color>
+    <color name="purple_light">#a29bfe</color>
+    <color name="purple_dark">#5541d7</color>
+
+    <!-- Background -->
+    <color name="bg_dark">#0f0f1a</color>
+    <color name="bg_card">#1a1a2e</color>
+
+    <!-- Text -->
+    <color name="text_primary">#e0e0e0</color>
+    <color name="text_secondary">#8888aa</color>
+
+    <!-- Accent -->
+    <color name="accent_red">#ff6b6b</color>
+    <color name="accent_green">#55efc4</color>
+</resources>
