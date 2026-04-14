@@ -1,7 +1,8 @@
-# Gradle wrapper files
-gradlew
-gradlew.bat
-gradle/wrapper/gradle-wrapper.jar
+# Gradle wrapper files (keep these for CI/CD)
+# Keep gradlew and gradle-wrapper.jar for GitHub Actions
+# gradlew
+# gradlew.bat
+# gradle/wrapper/gradle-wrapper.jar
 
 # Gradle cache
 .gradle/
