@@ -8,35 +8,19 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Clean GitHub Actions Cache
-      run: |
-        echo "Cleaning all caches..."
-        rm -rf ${{ github.workspace }}/.gradle
-        rm -rf ${{ github.workspace }}/node_modules
-        rm -rf $HOME/.gradle/caches
-      
     - name: Checkout code
       uses: actions/checkout@v4
-      with:
-        clean: true
-        fetch-depth: 0
 
     - name: Setup JDK 17
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: 'gradle'
-
-    - name: Setup Gradle
-      uses: gradle/gradle-build-action@v4
-      with:
-        gradle-version: '8.5'
-        cache-read-only: false
 
     - name: Build APK
       run: |
-        ./gradlew assembleDebug --no-daemon --info
+        echo "Starting build..."
+        ./gradlew clean assembleDebug --stacktrace
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
