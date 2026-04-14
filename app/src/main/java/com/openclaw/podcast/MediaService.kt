@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import androidx.media3.common.AudioAttributes
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
@@ -36,9 +37,9 @@ class MediaService : MediaSessionService() {
         super.onCreate()
         Log.d(TAG, "MediaService created")
         
-        val audioAttributes = android.media.AudioAttributes.Builder()
-            .setUsage(android.media.AudioAttributes.USAGE_MEDIA)
-            .setContentType(android.media.AudioAttributes.CONTENT_TYPE_MUSIC)
+        val audioAttributes = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_MEDIA)
+            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
             .build()
             
         exoPlayer = ExoPlayer.Builder(this)
@@ -70,7 +71,7 @@ class MediaService : MediaSessionService() {
             val mediaItemUrl = it.getStringExtra("media_url")
             
             if (mediaItemUrl != null) {
-                playMedia(mediaItemUrl, playbackState == Player.STATE_PAUSED)
+                playMedia(mediaItemUrl, false)
             }
         }
         // Call super onStartCommand for MediaSessionService compatibility
