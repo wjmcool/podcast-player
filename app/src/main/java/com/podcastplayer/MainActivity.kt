@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.widget.SeekBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.exoplayer2.ExoPlayer
@@ -20,6 +21,15 @@ class MainActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private var updateRunnable: Runnable? = null
 
+    // UI references
+    private lateinit var tvTitle: TextView
+    private lateinit var tvTime: TextView
+    private lateinit var tvTotal: TextView
+    private lateinit var seekBar: SeekBar
+    private lateinit var btnPlay: android.widget.ImageButton
+    private lateinit var btnPrev: android.widget.ImageButton
+    private lateinit var btnNext: android.widget.ImageButton
+
     private val episodes = listOf(
         Episode(1, "第1集：AI助手的诞生", "探讨智能助手的发展历程", "45:30", 2730000,
             "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", "2026-04-14"),
@@ -35,17 +45,24 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-        // Inflate layout programmatically (no custom layout files needed)
-        val binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        // Find views
+        val rvEpisodes = findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rvEpisodes)
+        tvTitle = findViewById(R.id.tvCurrentTitle)
+        tvTime = findViewById(R.id.tvCurrentTime)
+        tvTotal = findViewById(R.id.tvTotalTime)
+        seekBar = findViewById(R.id.seekBar)
+        btnPlay = findViewById(R.id.btnPlayPause)
+        btnPrev = findViewById(R.id.btnPrevious)
+        btnNext = findViewById(R.id.btnNext)
 
         adapter = EpisodesAdapter(episodes) { episode ->
             currentIndex = episodes.indexOf(episode)
             playEpisode(episode)
         }
-        binding.rvEpisodes.layoutManager = LinearLayoutManager(this)
-        binding.rvEpisodes.adapter = adapter
+        rvEpisodes.layoutManager = LinearLayoutManager(this)
+        rvEpisodes.adapter = adapter
 
         player = ExoPlayer.Builder(this).build()
         player?.addListener(object : Player.Listener {
@@ -54,11 +71,11 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        binding.btnPlayPause.setOnClickListener { togglePlay() }
-        binding.btnPrevious.setOnClickListener { playPrevious() }
-        binding.btnNext.setOnClickListener { playNext() }
+        btnPlay.setOnClickListener { togglePlay() }
+        btnPrev.setOnClickListener { playPrevious() }
+        btnNext.setOnClickListener { playNext() }
 
-        binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser && player?.duration != null) {
                     player?.seekTo((progress / 1000f * player!!.duration).toLong())
@@ -110,8 +127,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateUI() {
         val ep = episodes[currentIndex]
-        binding.tvCurrentTitle.text = ep.title
-        binding.btnPlayPause.setImageResource(
+        tvTitle.text = ep.title
+        btnPlay.setImageResource(
             if (isPlaying) android.R.drawable.ic_media_pause
             else android.R.drawable.ic_media_play
         )
@@ -124,9 +141,9 @@ class MainActivity : AppCompatActivity() {
                 player?.let { p ->
                     if (p.duration > 0) {
                         val progress = (p.currentPosition * 1000) / p.duration
-                        binding.seekBar.progress = progress.toInt()
-                        binding.tvCurrentTime.text = formatTime(p.currentPosition)
-                        binding.tvTotalTime.text = formatTime(p.duration)
+                        seekBar.progress = progress.toInt()
+                        tvTime.text = formatTime(p.currentPosition)
+                        tvTotal.text = formatTime(p.duration)
                     }
                     if (isPlaying) handler.postDelayed(this, 1000)
                 }
