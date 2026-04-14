@@ -39,9 +39,13 @@ jobs:
       - name: Get tag
         id: get_tag
         run: |
-          TAG=$(git describe --tags 2>/dev/null || echo "")
+          # Get the exact tag at HEAD (if any)
+          TAG=$(git tag --points-at HEAD | grep '^v' | head -1)
+          if [ -z "$TAG" ]; then
+            TAG=$(git describe --tags --exact 2>/dev/null || echo "")
+          fi
           echo "tag=$TAG" >> $GITHUB_OUTPUT
-          echo "Found tag: $TAG"
+          echo "Found tag: '$TAG'"
 
       - name: Upload to GitHub Release
         if: steps.get_tag.outputs.tag != ''
