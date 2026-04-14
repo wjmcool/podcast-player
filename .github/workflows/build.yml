@@ -17,10 +17,16 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    - name: Make gradlew executable
+      run: chmod +x gradlew
+
+    - name: List files
+      run: ls -la
+
     - name: Build APK
       run: |
         echo "Starting build..."
-        ./gradlew clean assembleDebug --stacktrace
+        ./gradlew clean assembleDebug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
