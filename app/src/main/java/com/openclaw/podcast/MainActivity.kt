@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private var exoPlayer: ExoPlayer? = null
-    private var isPlaying = false
+    private var isPlaying: Boolean = false
 
     private val podcastList = listOf(
         Podcast(
