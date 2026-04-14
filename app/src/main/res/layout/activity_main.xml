@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp"
-            android:background="linear-gradient(135deg, #667EEA 0%, #764BA2 100%)">
+            android:background="#667EEA">
 
             <TextView
                 android:id="@+id/currentEpisodeTitle"
