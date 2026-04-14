@@ -17,20 +17,79 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: List files before build
-      run: ls -la && ls -la gradle/wrapper/
+    - name: Verify gradlew exists
+      run: |
+        echo "Checking gradlew file..."
+        if [ -f "gradlew" ]; then
+            echo "gradlew exists!"
+            ls -la gradlew
+            file gradlew
+        else
+            echo "ERROR: gradlew not found!"
+            ls -la
+            exit 1
+        fi
 
     - name: Make gradlew executable
-      run: chmod +x gradlew && ls -la gradlew
+      run: chmod +x gradlew
 
-    - name: Build APK
+    - name: List all files
       run: |
-        echo "Starting build..."
-        ./gradlew tasks --all | grep -i assemble
-        ./gradlew assembleDebug
-        echo "Build completed!"
-        echo "Checking for APK files..."
-        find . -name "*.apk" -type f
+        echo "=== All files in project root ==="
+        ls -la
+        echo ""
+        echo "=== gradle directory ==="
+        ls -la gradle/
+        echo ""
+        echo "=== gradle/wrapper directory ==="
+        ls -la gradle/wrapper/
+        echo ""
+        echo "=== app directory ==="
+        ls -la app/
+
+    - name: Build APK with Gradle directly
+      run: |
+        echo "Starting direct Gradle build..."
+        mkdir -p build.gradle
+        cat > build.gradle << 'EOF'
+        buildscript {
+            repositories {
+                google()
+                mavenCentral()
+            }
+            dependencies {
+                classpath 'com.android.tools.build:gradle:8.2.0'
+            }
+        }
+        
+        allprojects {
+            repositories {
+                google()
+                mavenCentral()
+            }
+        }
+        
+        task clean(type: Delete) {
+            delete rootProject.buildDir
+        }
+        EOF
+        
+        # Try to use gradle directly
+        which gradle || echo "Gradle not installed globally"
+        
+        # Download gradle
+        wget -q https://services.gradle.org/distributions/gradle-8.5-bin.zip
+        unzip -q gradle-8.5-bin.zip
+        export PATH=$PWD/gradle-8.5/bin:$PATH
+        gradle --version
+        
+        # Now try to build
+        gradle assembleDebug --stacktrace || echo "Direct gradle build failed"
+
+    - name: Find APK files
+      run: |
+        echo "Looking for APK files..."
+        find . -name "*.apk" -type f -ls
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
@@ -38,4 +97,4 @@ jobs:
         name: podcast-player-debug
         path: app/build/outputs/apk/debug/app-debug.apk
         retention-days: 7
-        if-no-files-found: warn
+        if-no-files-found: error
