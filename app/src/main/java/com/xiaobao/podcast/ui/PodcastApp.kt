@@ -24,6 +24,7 @@ import coil.compose.AsyncImage
 import com.xiaobao.podcast.data.model.Episode
 import com.xiaobao.podcast.ui.components.*
 import com.xiaobao.podcast.ui.screens.PlayerViewModel
+import com.xiaobao.podcast.ui.screens.PlayerViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
