@@ -1,0 +1,35 @@
+name: Test Build
+
+on:
+  push:
+    branches: [ "podcast_*" ]
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        
+    - name: Show project structure
+      run: |
+        echo "=== Project structure ==="
+        find . -type f -name "*.gradle*" -o -name "*.kts" | head -20
+        echo "=== Gradle wrapper ==="
+        ls -la gradlew || echo "gradlew not found"
+        echo "=== Java version ==="
+        java -version
+        echo "=== Gradle version ==="
+        ./gradlew --version || echo "gradlew failed"
+        
+    - name: Try simple build
+      run: |
+        echo "尝试构建..."
+        ./gradlew tasks --all || echo "gradlew tasks failed"
