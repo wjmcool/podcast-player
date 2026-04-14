@@ -14,13 +14,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var player: ExoPlayer
     private var isPlaying = false
     
-    // 示例播客列表
+    // 示例播客列表 - 使用真实的免费音频资源
     private val podcastEpisodes = listOf(
-        PodcastEpisode(1, "科技前沿", "第1期 - 区块链技术解析", "https://example.com/podcast1.mp3", "38:15"),
-        PodcastEpisode(2, "科技前沿", "第2期 - 元宇宙与虚拟现实", "https://example.com/podcast2.mp3", "42:30"),
-        PodcastEpisode(3, "科技前沿", "第3期 - 人工智能的未来", "https://example.com/podcast3.mp3", "45:20"),
-        PodcastEpisode(4, "科技前沿", "第4期 - 量子计算入门", "https://example.com/podcast4.mp3", "35:45"),
-        PodcastEpisode(5, "科技前沿", "第5期 - 自动驾驶技术进展", "https://example.com/podcast5.mp3", "41:10")
+        PodcastEpisode(1, "科技前沿", "第1期 - 区块链技术解析", "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", "4:32"),
+        PodcastEpisode(2, "科技前沿", "第2期 - 元宇宙与虚拟现实", "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", "4:45"),
+        PodcastEpisode(3, "科技前沿", "第3期 - 人工智能的未来", "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", "5:12"),
+        PodcastEpisode(4, "科技前沿", "第4期 - 量子计算入门", "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3", "3:58"),
+        PodcastEpisode(5, "科技前沿", "第5期 - 自动驾驶技术进展", "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3", "4:21")
     )
     
     private var currentEpisodeIndex = 0
