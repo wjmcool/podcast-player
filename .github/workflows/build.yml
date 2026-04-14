@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          fetch-tags: true # ensure tags are fetched
+          fetch-tags: true
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -37,7 +37,7 @@ jobs:
         run: gradle assembleDebug --no-daemon -p app 2>&1
 
       - name: Upload to GitHub Release
-        if: startsWith(github.ref, 'refs/tags/')
+        if: github.ref_type == 'tag'
         uses: softprops/action-gh-release@v2
         with:
           files: app/build/outputs/apk/debug/*.apk
