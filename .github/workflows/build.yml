@@ -36,12 +36,20 @@ jobs:
       - name: Build debug APK
         run: gradle assembleDebug --no-daemon -p app 2>&1
 
+      - name: Get tag
+        id: get_tag
+        run: |
+          TAG=$(git describe --tags 2>/dev/null || echo "")
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "Found tag: $TAG"
+
       - name: Upload to GitHub Release
+        if: steps.get_tag.outputs.tag != ''
         uses: softprops/action-gh-release@v2
         with:
           files: app/build/outputs/apk/debug/*.apk
-          tag: ${{ github.ref_name }}
-          release_name: PodcastPlayer ${{ github.ref_name }}
+          tag_name: ${{ steps.get_tag.outputs.tag }}
+          name: PodcastPlayer ${{ steps.get_tag.outputs.tag }}
           draft: false
           prerelease: false
           generate_release_notes: false
