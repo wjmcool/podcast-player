@@ -17,16 +17,20 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Make gradlew executable
-      run: chmod +x gradlew
+    - name: List files before build
+      run: ls -la && ls -la gradle/wrapper/
 
-    - name: List files
-      run: ls -la
+    - name: Make gradlew executable
+      run: chmod +x gradlew && ls -la gradlew
 
     - name: Build APK
       run: |
         echo "Starting build..."
-        ./gradlew clean assembleDebug
+        ./gradlew tasks --all | grep -i assemble
+        ./gradlew assembleDebug
+        echo "Build completed!"
+        echo "Checking for APK files..."
+        find . -name "*.apk" -type f
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
@@ -34,3 +38,4 @@ jobs:
         name: podcast-player-debug
         path: app/build/outputs/apk/debug/app-debug.apk
         retention-days: 7
+        if-no-files-found: warn
