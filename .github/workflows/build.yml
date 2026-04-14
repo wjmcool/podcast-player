@@ -37,10 +37,10 @@ jobs:
         run: gradle assembleDebug --no-daemon -p app 2>&1
 
       - name: Upload to GitHub Release
-        if: github.ref_type == 'tag'
         uses: softprops/action-gh-release@v2
         with:
           files: app/build/outputs/apk/debug/*.apk
+          generate_release_notes: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
