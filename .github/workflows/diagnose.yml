@@ -1,0 +1,28 @@
+name: Diagnose Build
+
+on:
+  push:
+    branches: [ "podcast_*" ]
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Show directory structure
+      run: |
+        echo "=== Current directory ==="
+        pwd
+        echo "=== Root directory contents ==="
+        ls -la
+        echo "=== App directory ==="
+        ls -la app/ || echo "app directory not found"
+        echo "=== Gradle wrapper ==="
+        ls -la gradlew || echo "gradlew not found"
+        echo "=== Gradle wrapper directory ==="
+        ls -la gradle/wrapper/ || echo "gradle/wrapper not found"
+        echo "=== Build files ==="
+        find . -name "*.gradle*" -o -name "*.kts" | head -10
