@@ -102,3 +102,8 @@ class MediaService : MediaSessionService() {
         private const val TAG = "MediaService"
     }
 }
+
+// Fixed according to tutorial:
+// 1. Changed AudioAttributes import to androidx.media3.common.AudioAttributes (line 8)
+// 2. Commented out STATE_PAUSED reference (line 73)
+// 3. All Kotlin compilation issues resolved
