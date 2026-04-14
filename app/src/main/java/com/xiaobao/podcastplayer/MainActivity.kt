@@ -29,7 +29,7 @@ class PodcastAdapter(
     private val onEpisodeClick: (PodcastEpisode) -> Unit
 ) : RecyclerView.Adapter<PodcastAdapter.EpisodeViewHolder>() {
 
-    private var playingPosition = -1
+    var playingPosition: Int = -1
 
     class EpisodeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView = view.findViewById(R.id.episodeTitle)
@@ -57,17 +57,17 @@ class PodcastAdapter(
         }
 
         holder.itemView.setOnClickListener {
-            val previousPosition = playingPosition
+            val previousPosition: Int = playingPosition
             playingPosition = position
             if (previousPosition != -1) {
                 notifyItemChanged(previousPosition)
             }
             notifyItemChanged(position)
-            onEpisodeClick(episode)
+            onEpisodeClick.invoke(episode)
         }
     }
 
-    override fun getItemCount() = episodes.size
+    override fun getItemCount(): Int = episodes.size
 }
 
 class MainActivity : AppCompatActivity() {
@@ -82,11 +82,11 @@ class MainActivity : AppCompatActivity() {
 
     private var mediaPlayer: MediaPlayer? = null
     private var currentEpisode: PodcastEpisode? = null
-    private var isPlaying = false
-    private val handler = Handler(Looper.getMainLooper())
-    private var currentEpisodeIndex = 0
+    private var isPlaying: Boolean = false
+    private val handler: Handler = Handler(Looper.getMainLooper())
+    private var currentEpisodeIndex: Int = 0
 
-    private val episodes = listOf(
+    private val episodes: List<PodcastEpisode> = listOf(
         PodcastEpisode(
             1,
             "欢迎收听小宝播客",
@@ -124,16 +124,15 @@ class MainActivity : AppCompatActivity() {
         )
     )
 
-    private val updateProgressRunnable = object : Runnable {
+    private val updateProgressRunnable: Runnable = object : Runnable {
         override fun run() {
-            mediaPlayer?.let { player ->
-                if (player.isPlaying) {
-                    val currentPosition = player.currentPosition / 1000
-                    val minutes = currentPosition / 60
-                    val seconds = currentPosition % 60
-                    progressText.text = String.format("%02d:%02d", minutes, seconds)
-                    handler.postDelayed(this, 1000)
-                }
+            val player: MediaPlayer? = mediaPlayer
+            if (player != null && player.isPlaying) {
+                val currentPosition: Int = player.currentPosition / 1000
+                val minutes: Int = currentPosition / 60
+                val seconds: Int = currentPosition % 60
+                progressText.text = String.format("%02d:%02d", minutes, seconds)
+                handler.postDelayed(this, 1000)
             }
         }
     }
@@ -153,7 +152,6 @@ class MainActivity : AppCompatActivity() {
         setupRecyclerView()
         setupControls()
 
-        // Load first episode
         if (episodes.isNotEmpty()) {
             loadEpisode(episodes[0], 0)
         }
@@ -162,7 +160,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = PodcastAdapter(episodes) { episode ->
-            val index = episodes.indexOf(episode)
+            val index: Int = episodes.indexOf(episode)
             loadEpisode(episode, index)
             playEpisode()
         }
@@ -207,39 +205,39 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun playEpisode() {
-        currentEpisode?.let { episode ->
+        val episode: PodcastEpisode? = currentEpisode
+        if (episode != null) {
             try {
-                mediaPlayer = MediaPlayer().apply {
-                    setDataSource(episode.audioUrl)
-                    setOnPreparedListener {
-                        start()
-                        isPlaying = true
-                        updatePlayPauseButton()
-                        handler.post(updateProgressRunnable)
-                    }
-                    setOnCompletionListener {
-                        isPlaying = false
-                        updatePlayPauseButton()
-                        handler.removeCallbacks(updateProgressRunnable)
-                        // Auto play next
-                        if (currentEpisodeIndex < episodes.size - 1) {
-                            currentEpisodeIndex++
-                            loadEpisode(episodes[currentEpisodeIndex], currentEpisodeIndex)
-                            playEpisode()
-                        }
-                    }
-                    setOnErrorListener { _, what, extra ->
-                        Toast.makeText(
-                            this@MainActivity,
-                            "播放错误: $what, $extra",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        isPlaying = false
-                        updatePlayPauseButton()
-                        true
-                    }
-                    prepareAsync()
+                val player: MediaPlayer = MediaPlayer()
+                mediaPlayer = player
+                player.setDataSource(episode.audioUrl)
+                player.setOnPreparedListener {
+                    it.start()
+                    isPlaying = true
+                    updatePlayPauseButton()
+                    handler.post(updateProgressRunnable)
                 }
+                player.setOnCompletionListener {
+                    isPlaying = false
+                    updatePlayPauseButton()
+                    handler.removeCallbacks(updateProgressRunnable)
+                    if (currentEpisodeIndex < episodes.size - 1) {
+                        currentEpisodeIndex++
+                        loadEpisode(episodes[currentEpisodeIndex], currentEpisodeIndex)
+                        playEpisode()
+                    }
+                }
+                player.setOnErrorListener { _, what, extra ->
+                    Toast.makeText(
+                        this@MainActivity,
+                        "播放错误: $what, $extra",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    isPlaying = false
+                    updatePlayPauseButton()
+                    true
+                }
+                player.prepareAsync()
             } catch (e: IOException) {
                 e.printStackTrace()
                 Toast.makeText(this, "无法加载音频", Toast.LENGTH_SHORT).show()
@@ -248,16 +246,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun pauseEpisode() {
-        mediaPlayer?.pause()
+        val player: MediaPlayer? = mediaPlayer
+        if (player != null) {
+            player.pause()
+        }
         isPlaying = false
         updatePlayPauseButton()
         handler.removeCallbacks(updateProgressRunnable)
     }
 
     private fun stopMediaPlayer() {
-        mediaPlayer?.let {
-            it.stop()
-            it.release()
+        val player: MediaPlayer? = mediaPlayer
+        if (player != null) {
+            player.stop()
+            player.release()
         }
         mediaPlayer = null
         handler.removeCallbacks(updateProgressRunnable)
