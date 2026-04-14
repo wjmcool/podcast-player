@@ -16,23 +16,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
+          distribution: temurin
           java-version: '17'
+          cache: 'gradle'
+
 
       - name: Setup Gradle
-        run: |
-          ./gradlew --version || true
-          if [ ! -f ./gradlew ]; then
-            gradle wrapper --gradle-version 8.4
-          fi
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 8.4
 
       - name: Build debug APK
-        run: |
-          chmod +x ./gradlew
-          ./gradlew assembleDebug --no-daemon 2>&1
+        run: ./gradlew assembleDebug --no-daemon 2>&1
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
