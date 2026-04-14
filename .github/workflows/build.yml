@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - podcast_minimax-m2.7
+    tags:
+      - 'v*'
   pull_request:
     branches:
       - podcast_minimax-m2.7
@@ -15,6 +17,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -32,11 +37,10 @@ jobs:
         run: gradle assembleDebug --no-daemon -p app 2>&1
 
       - name: Upload to GitHub Release
-        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
         with:
           files: app/build/outputs/apk/debug/*.apk
-          release_name: PodcastPlayer ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
