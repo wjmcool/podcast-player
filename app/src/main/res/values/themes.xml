@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.PodcastPlayer" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">#667EEA</item>
+        <item name="colorPrimaryDark">#5568D3</item>
+        <item name="colorAccent">#764BA2</item>
+    </style>
+</resources>
