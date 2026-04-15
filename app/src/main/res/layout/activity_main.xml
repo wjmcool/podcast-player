@@ -123,26 +123,22 @@
         android:gravity="center"
         android:paddingBottom="16dp">
 
-        <ImageButton
+        <Button
             android:id="@+id/rewindBtn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@android:drawable/ic_menu_rew"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="后退 15 秒"
-            android:tint="#00d9ff"
-            android:padding="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⏪ 15 秒"
+            android:backgroundTint="#00d9ff"
+            android:textColor="#ffffff"
             android:layout_marginEnd="16dp" />
 
-        <ImageButton
+        <Button
             android:id="@+id/forwardBtn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@android:drawable/ic_menu_fwd"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="前进 15 秒"
-            android:tint="#00d9ff"
-            android:padding="12dp" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="15 秒 ⏩"
+            android:backgroundTint="#00d9ff"
+            android:textColor="#ffffff" />
     </LinearLayout>
 
     <!-- Volume Control -->
