@@ -14,4 +14,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "PodcastKotlinApp"
-include(":")
+include(":app")
