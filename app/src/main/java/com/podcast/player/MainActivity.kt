@@ -12,7 +12,7 @@ class Episode(val title: String, val author: String, val duration: String, val a
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private var episodes = mutableListOf<Episode>()
+    private val episodes = mutableListOf<Episode>()
     private var adapter: EpisodeAdapter? = null
     private var currentEpisode: Episode? = null
     private var isPlaying = false
