@@ -1,14 +1,11 @@
 package com.podcast.player
 
 import android.os.Bundle
-import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.podcast.player.databinding.ActivityMainBinding
-import java.io.Serializable
 
-class Episode(val title: String, val author: String, val duration: String, val audioUrl: String, val imageUrl: String): Serializable
+class Episode(var title: String, var author: String, var duration: String, var audioUrl: String, var imageUrl: String)
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -29,36 +26,36 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupEpisodes() {
         episodes.add(Episode(
-            "科技前沿：AI如何改变我们的生活",
-            "科技博主小明",
+            "Tech: AI changing our lives",
+            "Tech Blogger Ming",
             "15:30",
             "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
             "https://picsum.photos/200/200?random=1"
         ))
         episodes.add(Episode(
-            "读书分享：《人类简史》解读",
-            "读书达人Lucy",
+            "Book Review: Sapiens",
+            "Reader Lucy",
             "22:45",
             "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
             "https://picsum.photos/200/200?random=2"
         ))
         episodes.add(Episode(
-            "职场干货：面试技巧大公开",
-            "HR张老师",
+            "Work: Interview Tips",
+            "HR Teacher Zhang",
             "18:20",
             "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
             "https://picsum.photos/200/200?random=3"
         ))
         episodes.add(Episode(
-            "生活美学：家居收纳小妙招",
-            "生活家小红",
+            "Life: Home Organization",
+            "Lifestyle Expert Red",
             "12:15",
             "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
             "https://picsum.photos/200/200?random=4"
         ))
         episodes.add(Episode(
-            "英语学习：每日一句地道表达",
-            "英语老师Jack",
+            "English: Daily Expression",
+            "Teacher Jack",
             "08:00",
             "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
             "https://picsum.photos/200/200?random=5"
@@ -78,7 +75,7 @@ class MainActivity : AppCompatActivity() {
         binding.titleText.text = episode.title
         binding.authorText.text = episode.author
         isPlaying = true
-        binding.playButton.text = "⏸"
+        binding.playButton.text = "||"
         adapter?.notifyDataSetChanged()
     }
 
@@ -88,7 +85,7 @@ class MainActivity : AppCompatActivity() {
                 playEpisode(episodes[0])
             } else {
                 isPlaying = !isPlaying
-                binding.playButton.text = if (isPlaying) "⏸" else "▶"
+                binding.playButton.text = if (isPlaying) "||" else ">"
             }
         }
     }
