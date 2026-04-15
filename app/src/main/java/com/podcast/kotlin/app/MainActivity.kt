@@ -7,11 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.podcast.kotlin.app.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityMainBinding
 
     data class Podcast(val id: Int, val title: String, val duration: Int)
 
@@ -27,13 +24,41 @@ class MainActivity : AppCompatActivity() {
     private var currentTime = 0.0
     private var volume = 0.7
 
+    private lateinit var podcastList: LinearLayout
+    private lateinit var currentPodcastText: TextView
+    private lateinit var totalTimeText: TextView
+    private lateinit var currentTimeText: TextView
+    private lateinit var progressBar: SeekBar
+    private lateinit var playBtn: ImageButton
+    private lateinit var prevBtn: ImageButton
+    private lateinit var nextBtn: ImageButton
+    private lateinit var rewindBtn: ImageButton
+    private lateinit var forwardBtn: ImageButton
+    private lateinit var volumeSeekBar: SeekBar
+    private lateinit var volumeValueText: TextView
+    private lateinit var statusText: TextView
+
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var playbackRunnable: Runnable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_main)
+
+        // Initialize views
+        podcastList = findViewById(R.id.podcastList)
+        currentPodcastText = findViewById(R.id.currentPodcastText)
+        totalTimeText = findViewById(R.id.totalTimeText)
+        currentTimeText = findViewById(R.id.currentTimeText)
+        progressBar = findViewById(R.id.progressBar)
+        playBtn = findViewById(R.id.playBtn)
+        prevBtn = findViewById(R.id.prevBtn)
+        nextBtn = findViewById(R.id.nextBtn)
+        rewindBtn = findViewById(R.id.rewindBtn)
+        forwardBtn = findViewById(R.id.forwardBtn)
+        volumeSeekBar = findViewById(R.id.volumeSeekBar)
+        volumeValueText = findViewById(R.id.volumeValueText)
+        statusText = findViewById(R.id.statusText)
 
         setupPodcastList()
         setupControls()
@@ -44,9 +69,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupPodcastList() {
-        val listContainer = binding.podcastList
         podcasts.forEach { podcast ->
-            val itemView = LayoutInflater.from(this).inflate(R.layout.podcast_item, listContainer, false)
+            val itemView =LayoutInflater.from(this).inflate(R.layout.podcast_item, podcastList, false)
             itemView.findViewById<TextView>(R.id.podcastTitle).text = podcast.title
             itemView.findViewById<TextView>(R.id.podcastDesc).text = when(podcast.id) {
                 1 -> "探索最新的科技趋势和创新"
@@ -59,12 +83,12 @@ class MainActivity : AppCompatActivity() {
                 selectPodcast(podcast)
                 updatePodcastSelection(podcast.id)
             }
-            listContainer.addView(itemView)
+            podcastList.addView(itemView)
         }
     }
 
     private fun setupControls() {
-        binding.playBtn.setOnClickListener {
+        playBtn.setOnClickListener {
             if (currentPodcast != null) {
                 isPlaying = !isPlaying
                 updatePlayButton()
@@ -74,11 +98,11 @@ class MainActivity : AppCompatActivity() {
                     stopPlayback()
                 }
             } else {
-                binding.statusText.text = "⚠️ 请先选择一个播客"
+                statusText.text = "⚠️ 请先选择一个播客"
             }
         }
 
-        binding.prevBtn.setOnClickListener {
+        prevBtn.setOnClickListener {
             if (currentPodcast != null) {
                 val index = podcasts.indexOf(currentPodcast)
                 val prevIndex = (index - 1 + podcasts.size) % podcasts.size
@@ -87,7 +111,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.nextBtn.setOnClickListener {
+        nextBtn.setOnClickListener {
             if (currentPodcast != null) {
                 val index = podcasts.indexOf(currentPodcast)
                 val nextIndex = (index + 1) % podcasts.size
@@ -96,7 +120,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.rewindBtn.setOnClickListener {
+        rewindBtn.setOnClickListener {
             if (currentPodcast != null) {
                 currentTime = Math.max(0.0, currentTime - 15.0)
                 updateTimeDisplay()
@@ -104,7 +128,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.forwardBtn.setOnClickListener {
+        forwardBtn.setOnClickListener {
             if (currentPodcast != null) {
                 currentTime = Math.min(currentPodcast!!.duration.toDouble(), currentTime + 15.0)
                 updateTimeDisplay()
@@ -112,23 +136,25 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.progressBar.setOnClickListener { view ->
-            if (currentPodcast != null) {
-                val percent = view.width.toFloat() / view.width.toFloat()
-                currentTime = percent * currentPodcast!!.duration
-                updateTimeDisplay()
-                updateProgress()
+        progressBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                if (currentPodcast != null && fromUser) {
+                    currentTime = (progress / 100.0) * currentPodcast!!.duration
+                    updateTimeDisplay()
+                    updateProgress()
+                }
             }
-        }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
     }
 
     private fun setupVolumeControl() {
-        binding.volumeSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        volumeSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 volume = progress / 100.0
-                binding.volumeValueText.text = "$progress%"
+                volumeValueText.text = "$progress%"
             }
-
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
@@ -140,17 +166,16 @@ class MainActivity : AppCompatActivity() {
         isPlaying = false
         updatePlayButton()
 
-        binding.currentPodcastText.text = podcast.title
-        binding.totalTimeText.text = formatTime(podcast.duration)
-        binding.statusText.text = "📡 已选择: ${podcast.title} - 点击播放"
+        currentPodcastText.text = podcast.title
+        totalTimeText.text = formatTime(podcast.duration)
+        statusText.text = "📡 已选择：${podcast.title} - 点击播放"
         updateProgress()
         updateTimeDisplay()
     }
 
     private fun updatePodcastSelection(selectedId: Int) {
-        val listContainer = binding.podcastList
-        for (i in 0 until listContainer.childCount) {
-            val itemView = listContainer.getChildAt(i)
+        for (i in 0 until podcastList.childCount) {
+            val itemView = podcastList.getChildAt(i)
             val titleView = itemView.findViewById<TextView>(R.id.podcastTitle)
             val isSelected = podcasts[i].id == selectedId
             itemView.isSelected = isSelected
@@ -165,14 +190,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updatePlayButton() {
-        binding.playBtn.setImageResource(
+        playBtn.setImageResource(
             if (isPlaying) android.R.drawable.ic_media_pause
             else android.R.drawable.ic_media_play
         )
-        binding.statusText.text = if (isPlaying) {
-            "▶️ 正在播放: ${currentPodcast?.title}"
+        statusText.text = if (isPlaying) {
+            "▶️ 正在播放：${currentPodcast?.title}"
         } else {
-            "⏸ 已暂停: ${currentPodcast?.title}"
+            "⏸ 已暂停：${currentPodcast?.title}"
         }
     }
 
@@ -185,7 +210,7 @@ class MainActivity : AppCompatActivity() {
                         currentTime = 0.0
                         isPlaying = false
                         updatePlayButton()
-                        binding.statusText.text = "✅ 播放完成"
+                        statusText.text = "✅ 播放完成"
                     } else {
                         updateTimeDisplay()
                         updateProgress()
@@ -202,13 +227,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateTimeDisplay() {
-        binding.currentTimeText.text = formatTime(currentTime.toInt())
+        currentTimeText.text = formatTime(currentTime.toInt())
     }
 
     private fun updateProgress() {
         if (currentPodcast != null) {
             val progress = (currentTime / currentPodcast!!.duration * 100).toInt()
-            binding.progressBar.progress = progress
+            progressBar.progress = progress
         }
     }
 

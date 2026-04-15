@@ -47,7 +47,6 @@
         android:max="100"
         android:progress="0"
         android:progressDrawable="@drawable/progress_bar"
-        android:thumb="@drawable/progress_thumb"
         android:paddingTop="8dp"
         android:paddingBottom="8dp" />
 
@@ -68,7 +67,6 @@
             android:gravity="center" />
 
         <TextView
-            android:id="@+id/totalTimeDisplay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0:00"
@@ -91,7 +89,7 @@
             android:id="@+id/prevBtn"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@android:drawable/ic_media_previous"
+            android:src="@android:drawable/ic_menu_rewind"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="上一集"
             android:tint="#ffffff"
@@ -104,14 +102,13 @@
             android:src="@android:drawable/ic_media_play"
             android:background="@drawable/play_button"
             android:contentDescription="播放/暂停"
-            android:padding="20dp"
-            android:layout_marginHorizontal="16dp" />
+            android:padding="20dp" />
 
         <ImageButton
             android:id="@+id/nextBtn"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@android:drawable/ic_media_next"
+            android:src="@android:drawable/ic_menu_sort_alphabetically"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="下一集"
             android:tint="#ffffff"
@@ -130,7 +127,7 @@
             android:id="@+id/rewindBtn"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@android:drawable/ic_media_rew"
+            android:src="@android:drawable/ic_menu_rewind"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="后退 15 秒"
             android:tint="#00d9ff"
@@ -141,7 +138,7 @@
             android:id="@+id/forwardBtn"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@android:drawable/ic_media_fwd"
+            android:src="@android:drawable/ic_menu_fast_connection"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="前进 15 秒"
             android:tint="#00d9ff"
